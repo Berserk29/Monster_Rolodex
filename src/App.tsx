@@ -1,21 +1,30 @@
-// import { Component } from 'react';   // For class
-import { useState, useEffect } from 'react';    // For functional
+import { useState, useEffect, ChangeEvent } from 'react';    // For functional
 
 import CardList from './components/card-list/card-list.component';
 import SearchBox from './components/search-box/search-box.component';
+
+import { getData } from './utils/data.utils';
 import './App.css';
 
-// FONCTIONAL
+export type Monster = {
+  id: string;
+  name: string;
+  email: string;
+}
+
 const App = () => {
   const [searchField, setSearchField] = useState(''); // [value, setValue]
-  const [monsters, setMonster] = useState([]);
+  const [monsters, setMonster] = useState<Monster[]>([]);
   const [filterMonsters, setFilterMonsters] = useState(monsters);
   
 
   useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/users')
-      .then(res => res.json())
-      .then(users => setMonster(users));
+    const fetchUser = async () => {
+      const users = await getData<Monster[]>('https://jsonplaceholder.typicode.com/users');
+      setMonster(users)
+    };
+
+    fetchUser();
   }, [])   // Pass a empty arr to never using after first time
   
   useEffect(() => {
@@ -23,7 +32,7 @@ const App = () => {
     setFilterMonsters(newFilterMonsters);
   }, [monsters, searchField]);  // Will use this function when monster and searchField change
 
-  const onSearchChange = (e) => {
+  const onSearchChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const searchFieldString = e.target.value.toLowerCase();
     setSearchField(searchFieldString);
   }
@@ -32,7 +41,7 @@ const App = () => {
     <div className="App">
       <h1 className='app-title'>Monster Rolodex</h1>
       <SearchBox 
-        OnChangeHandler={onSearchChange} 
+        onChangeHandler={onSearchChange} 
         placeholder='Search monsters' 
         className='search-box'
       />

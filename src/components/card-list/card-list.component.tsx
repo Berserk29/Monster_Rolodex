@@ -1,12 +1,17 @@
 // import { Component } from "react"; // for class
 import Card from "../card/card.component";
+import { Monster } from "../../App";
 
 import './card-list.style.css';
 
+type CardListProps = {
+    monsters: Monster[];
+}
+
 // FONCTIONAL
-const CardList = ({ monsters }) => (  // Because only one thing to return i use () --> inplicite return
+const CardList = ({ monsters }: CardListProps) => (  // Because only one thing to return i use () --> inplicite return
     <div className="card-list">
-        {monsters.map(el => <Card element={el} key={el.id}/> )}
+        {monsters.map(el => <Card monster={el} key={el.id}/> )}
     </div>
 )
 
